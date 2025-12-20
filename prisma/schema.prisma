@@ -1,0 +1,203 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_SCHEMA")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+// BASE MODULE
+
+model Base_user {
+  id               Int                 @id @default(autoincrement())
+  username         String              @unique
+  password         String
+  email            String              @unique
+  createdDate      DateTime            @default(now())
+  lastPasswordDate DateTime?
+  modifiedDate     DateTime            @default(now())
+  active           Boolean             @default(true)
+  Person           Base_person?        @relation(fields: [personId], references: [id])
+  personId         Int?
+  recoverToken     String              @default("")
+  recoverDate      DateTime?
+  roles            Base_rolesOnUsers[]
+  AccountType      Base_parameter?     @relation(fields: [accountTypeId], references: [id])
+  accountTypeId    Int?
+  logs             Audit_log[]
+}
+
+model Base_person {
+  id        Int         @id @default(autoincrement())
+  dni       String      @unique
+  name      String
+  users     Base_user[]
+  email     String?     @unique
+  photo     String?
+  firstName String
+  lastName  String
+  mobile    String?
+}
+
+model Base_localUserVar {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique @db.VarChar(100)
+  displayName String  @db.VarChar(100)
+  read        Boolean @default(false)
+  write       Boolean @default(false)
+  code        String? @unique
+}
+
+model Base_module {
+  id          Int                @id @default(autoincrement())
+  code        String?            @unique
+  name        String             @db.VarChar(50)
+  subname     String             @db.VarChar(100)
+  description String
+  icon        String
+  installed   Boolean            @default(false)
+  pages       Base_page[]
+  menus       Base_menu[]
+  roles       Base_role[]
+  active      Boolean            @default(false)
+  MailAccount Base_mailAccount[]
+  Base_entity Base_entity[]
+}
+
+model Base_page {
+  id       Int          @id @default(autoincrement())
+  code     String?      @unique
+  name     String       @db.VarChar(50)
+  url      String?
+  Module   Base_module? @relation(fields: [moduleId], references: [id])
+  moduleId Int?
+  menus    Base_menu[]
+  active   Boolean      @default(true)
+}
+
+model Base_menu {
+  id          Int                 @id @default(autoincrement())
+  code        String?             @unique
+  name        String
+  displayName String?
+  description String?
+  icon        String?             @default("BubbleChart")
+  header      Boolean             @default(false)
+  priority    Int                 @default(0)
+  Page        Base_page?          @relation(fields: [pageId], references: [id])
+  pageId      Int?
+  Module      Base_module?        @relation(fields: [moduleId], references: [id])
+  moduleId    Int?
+  menus       Base_menu[]         @relation("MenuToMenu")
+  Menu        Base_menu?          @relation("MenuToMenu", fields: [menuId], references: [id])
+  menuId      Int?
+  dashboard   Boolean             @default(false)
+  active      Boolean             @default(true)
+  roles       Base_rolesOnMenus[]
+}
+
+model Base_role {
+  id          Int                 @id @default(autoincrement())
+  code        String?             @unique
+  name        String?
+  description String
+  Module      Base_module?        @relation(fields: [moduleId], references: [id])
+  moduleId    Int?
+  access      Base_access[]
+  users       Base_rolesOnUsers[]
+  menus       Base_rolesOnMenus[]
+  active      Boolean             @default(true)
+}
+
+model Base_rolesOnUsers {
+  Role   Base_role @relation(fields: [roleId], references: [id])
+  roleId Int
+  User   Base_user @relation(fields: [userId], references: [id])
+  userId Int
+  active Boolean   @default(true)
+
+  @@id([roleId, userId])
+}
+
+model Base_rolesOnMenus {
+  Role   Base_role @relation(fields: [roleId], references: [id])
+  roleId Int
+  Menu   Base_menu @relation(fields: [menuId], references: [id])
+  menuId Int
+  active Boolean   @default(true)
+
+  @@id([roleId, menuId])
+}
+
+model Base_entity {
+  id       Int           @id @default(autoincrement())
+  code     String        @unique
+  name     String
+  Module   Base_module   @relation(fields: [moduleId], references: [id])
+  moduleId Int
+  access   Base_access[]
+}
+
+model Base_access {
+  id       Int         @id @default(autoincrement())
+  code     String?     @unique
+  Entity   Base_entity @relation(fields: [entityId], references: [id])
+  entityId Int
+  Role     Base_role   @relation(fields: [roleId], references: [id])
+  roleId   Int
+  read     Boolean     @default(false)
+  create   Boolean     @default(false)
+  write    Boolean     @default(false)
+  remove   Boolean     @default(false)
+  active   Boolean     @default(true)
+
+  @@unique([entityId, roleId])
+}
+
+model Base_mailServer {
+  id          Int                @id @default(autoincrement())
+  name        String             @db.VarChar(100)
+  code        String?            @unique
+  smtp        String             @db.VarChar(150)
+  port        String
+  email       String
+  password    String
+  active      Boolean            @default(true)
+  MailAccount Base_mailAccount[]
+}
+
+model Base_mailAccount {
+  id           Int              @id @default(autoincrement())
+  name         String           @db.VarChar(100)
+  email        String
+  Module       Base_module?     @relation(fields: [moduleId], references: [id])
+  moduleId     Int
+  MailServer   Base_mailServer? @relation(fields: [mailServerId], references: [id])
+  mailServerId Int
+  active       Boolean          @default(true)
+}
+
+model Base_parameter {
+  id     Int         @id @default(autoincrement())
+  key    String      @unique @db.VarChar
+  name   String      @db.VarChar(100)
+  value  String      @db.VarChar(100)
+  active Boolean     @default(true)
+  code   String?     @unique
+  users  Base_user[]
+}
+
+// AUDIT MODULE
+
+model Audit_log {
+  id       Int       @id @default(autoincrement())
+  User     Base_user @relation(fields: [userId], references: [id])
+  userId   Int
+  datetime DateTime
+  action   String
+  table    String
+  record   Json
+  data     Json
+}

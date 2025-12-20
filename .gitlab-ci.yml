@@ -1,0 +1,27 @@
+stages:
+  - deploy
+
+# Job para el entorno de desarrollo
+deploy_dev:
+  stage: deploy
+  script:
+    - cd /var/www/web_apps/app.sgu.uea.edu.ec/sgu  # Cambiar al directorio raíz del proyecto
+    - yarn install --frozen-lockfile  # Asegúrate de instalar todas las dependencias
+    - yarn build  # Construir el proyecto antes de recargar
+    - pm2 reload ecosystem.config.js  # Recargar con PM2
+  tags:
+    - shell
+    - dev  # Etiqueta para desarrollo
+
+# Job para el entorno de producción
+deploy_prod:
+  stage: deploy
+  script:
+    - cd /var/www/web_apps/app.sgu.uea.edu.ec/sgu  # Cambiar al directorio raíz del proyecto
+    - git pull origin test  # Descargar los últimos cambios desde la rama 'test' del repositorio
+    - yarn install --frozen-lockfile  # Asegúrate de instalar todas las dependencias
+    - yarn build  # Construir el proyecto antes de recargar
+    - pm2 reload ecosystem.config.js  # Recargar con PM2
+  tags:
+    - shell
+    - prod  # Etiqueta para producción

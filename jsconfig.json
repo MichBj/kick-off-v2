@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@database/*": ["database/*"],
+      "@module/*": ["module/*"],
+      "@lib/*": ["lib/*"],
+      "@middleware/*": ["middleware/*"],
+      "@helper/*": ["helper/*"],
+      "@pages/*": ["pages/*"],
+      "@redux/*": ["redux/*"],
+      "@ui/*": ["ui/*"],
+      "@public/*": ["public/*"],
+      "@services/*": ["services/*"],
+      "@validations/*": ["validations/*"],
+      "@styles/*": ["styles/*"]
+    }
+  }
+}

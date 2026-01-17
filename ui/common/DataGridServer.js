@@ -109,7 +109,7 @@ const DataGridServer = ({
       if (_page === 1) _page = 1;
       setPageChecked(true);
       setPage(_page);
-      return undefined;
+      return;
     }
     const sort = sortBy();
     const filters = filterBy();
@@ -154,7 +154,7 @@ const DataGridServer = ({
   ]);
 
   useEffect(() => {
-    if (loading || isEqual(filter, lastFilter)) return undefined;
+    if (loading || isEqual(filter, lastFilter)) return;
     setLoading(true);
     pageHandler.loader(
       enqueueSnackbar,

@@ -27,6 +27,7 @@ model Base_user {
   AccountType      Base_parameter?     @relation(fields: [accountTypeId], references: [id])
   accountTypeId    Int?
   logs             Audit_log[]
+  courts           courts[]
 }
 
 model Base_person {
@@ -200,4 +201,17 @@ model Audit_log {
   table    String
   record   Json
   data     Json
+}
+
+// Kick-Off Module
+model courts {
+  id        Int       @id @default(autoincrement())
+  name      String
+  location  String
+  userId    Int
+  User      Base_user @relation(fields: [userId], references: [id])
+  isIndoor  Boolean   @default(false)
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }

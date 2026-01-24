@@ -98,7 +98,7 @@ const AccessForm = ({ record, roleId }) => {
             size="medium"
             fullWidth
             variant="contained"
-            color="primary"
+            // color="primary"
             align="center"
             onClick={handleSubmit(onSubmit)}
             disabled={loading || !isDirty}

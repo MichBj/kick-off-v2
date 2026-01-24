@@ -41,6 +41,7 @@ export const selector = {
     mailAccount: (state) => handler(state, 'mailAccount'),
     parameter: (state) => handler(state, 'parameter'),
     log: (state) => handler(state, 'log'),
+    court: (state) => handler(state, 'court'),
   },
 };
 

@@ -31,7 +31,7 @@ const pages = async (moduleId) => {
     {
       code: 'courtSchedule',
       name: 'Horarios de Canchas',
-      url: '/courts/schedule',
+      url: '/courts/config/schedule',
       moduleId: moduleId,
     },
     {

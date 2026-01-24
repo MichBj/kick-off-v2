@@ -29,6 +29,7 @@ handler
         const response = await prisma.courts.create(request.body);
         return api.success(response);
       } catch (error) {
+        console.log(error);
         return api.failure('Error creating courts record', error);
       }
     });

@@ -26,7 +26,7 @@ const List = ({ menuCode }) => {
   return (
     <Row gutter={[16, 16]}>
       {data.map((menu) => (
-        <Col key={menu.id} xs={24} sm={12} md={8} lg={8} xl={6}>
+        <Col key={menu.id} xs={24}>
           <Card menu={menu} />
         </Col>
       ))}

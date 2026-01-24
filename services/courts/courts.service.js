@@ -10,6 +10,7 @@ const getById = (id) => {
 };
 
 const create = (params) => {
+  console.log('Creating court with params:', params);
   return httpRequest.post('/api/courts', params);
 };
 

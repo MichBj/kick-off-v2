@@ -100,6 +100,7 @@ const Select = ({
     setSuccess(true);
     try {
       const data = await getData();
+      console.log('Select data loaded for', id, data);
       setData(filterData(data));
     } catch (error) {
       snackbar.error(enqueueSnackbar, parseError(label, error));

@@ -223,8 +223,8 @@ model courtShedules {
   Court     courts   @relation(fields: [courtId], references: [id])
   dayOfWeek Int
   duration  Int      @default(60)
-  startTime String
-  endTime   String
+  startTime String?
+  endTime   String?
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

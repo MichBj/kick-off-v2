@@ -3,19 +3,20 @@ import TextField from '@ui/common/TextField';
 import Select from '@ui/common/Select';
 import Button from '@ui/common/Button';
 import Loading from '@ui/common/Loading';
-import { resolver } from '@validations/courts/courts.resolver';
+import { resolver } from '@validations/courts/schedules.resolver';
 import { useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { form } from '@lib/form';
-import { userService } from '@services/user.service';
+import { courtSchedulesService } from '@services/courts/shcedules.service';
+import DayOfWeek from '@ui/common/DayOfWeek';
+import Duration from '@ui/common/Duration';
 import { courtsService } from '@services/courts/courts.service';
-import Switch from '@ui/common/Switch';
 
-const FIELDS = ['name', 'location', 'userId', 'isIndoor'];
+const FIELDS = ['courtId', 'dayOfWeek', 'duration'];
 
-const CourtForm = ({ record }) => {
+const ScheduleForm = ({ record }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
@@ -27,50 +28,49 @@ const CourtForm = ({ record }) => {
   } = useForm({ resolver, defaultValues: form.defaultValues(record, FIELDS) });
 
   const onSubmit = async (data) => {
-    console.log('Submitting court form with data:', data);
     if (loading) return;
+    form.submit({
+      recordId: record.id,
+      data,
+      service: courtSchedulesService,
+      router,
+      dirtyFields,
+      enqueueSnackbar,
+      reset,
+      setLoading,
+      fields: FIELDS,
+    });
   };
-
+  console.log(errors);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={1}>
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-          <TextField
+          <Select
             control={control}
-            id="name"
-            label="Nombre"
+            id="courtId"
+            label="Cancha"
             disabled={loading}
-            errors={errors.name}
+            errors={errors.courtId}
+            service={courtsService}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-          <TextField
+          <DayOfWeek
             control={control}
-            id="location"
-            label="Ubicación"
+            id="dayOfWeek"
+            label="Día de la semana"
             disabled={loading}
-            errors={errors.location}
-            multiline={true}
-            rows={4}
+            errors={errors.dayOfWeek}
           />
         </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={3} xl={3}>
-          <Select
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+          <Duration
             control={control}
-            id="userId"
-            label="Usuario"
+            id="duration"
+            label="Duración (minutos)"
             disabled={loading}
-            errors={errors.userId}
-            service={userService}
-            getter={(row) => row?.Person?.name}
-          />
-        </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={3} xl={3}>
-          <Switch
-            control={control}
-            id="isIndoor"
-            label="Cubierta"
-            checked={record?.isIndoor}
+            errors={errors.duration}
           />
         </Grid>
       </Grid>
@@ -84,7 +84,7 @@ const CourtForm = ({ record }) => {
             color="primary"
             align="center"
             onClick={handleSubmit(onSubmit)}
-            //disabled={loading || !isDirty}
+            disabled={loading || !isDirty}
           >
             Guardar
           </Button>
@@ -95,4 +95,4 @@ const CourtForm = ({ record }) => {
   );
 };
 
-export default CourtForm;
+export default ScheduleForm;

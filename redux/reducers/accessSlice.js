@@ -42,6 +42,7 @@ export const selector = {
     parameter: (state) => handler(state, 'parameter'),
     log: (state) => handler(state, 'log'),
     court: (state) => handler(state, 'court'),
+    courtSchedule: (state) => handler(state, 'courtSchedule'),
   },
 };
 

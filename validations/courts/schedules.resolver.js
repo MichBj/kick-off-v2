@@ -9,8 +9,8 @@ const schema = Yup.object().shape({
   courtId: Yup.number().required('Cancha requerida'),
   dayOfWeek: Yup.number().required('Día de la semana requerido'),
   duration: Yup.number().required('Duración requerida'),
-  startTime: Yup.string().required('Hora de inicio requerida'),
-  endTime: Yup.string().required('Hora de fin requerida'),
+  startTime: Yup.string(),
+  endTime: Yup.string(),
 });
 
 export const resolver = yupResolver(schema);

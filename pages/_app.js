@@ -7,6 +7,7 @@ import store from '@redux/store';
 import theme from '@styles/theme';
 import { Provider } from 'react-redux';
 import { SnackbarProvider } from 'notistack';
+import { UserProvider } from '@lib/userContext';
 import 'antd/dist/reset.css';
 
 export default function MyApp(props) {
@@ -25,11 +26,13 @@ export default function MyApp(props) {
       </Head>
       <Provider store={store}>
         <ConfigProvider theme={theme} locale={esES}>
-          <Layout>
-            <SnackbarProvider maxSnack={3}>
-              <Component {...pageProps} />
-            </SnackbarProvider>
-          </Layout>
+          <UserProvider>
+            <Layout>
+              <SnackbarProvider maxSnack={3}>
+                <Component {...pageProps} />
+              </SnackbarProvider>
+            </Layout>
+          </UserProvider>
         </ConfigProvider>
       </Provider>
     </React.Fragment>

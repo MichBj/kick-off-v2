@@ -12,6 +12,7 @@ import {
 import Dashboard from '@ui/layout/Dashboard';
 import Loading from '@ui/common/Loading';
 import DashboardList from '@ui/common/Dashboard/List';
+import ProtectedRoute from '@components/common/ProtectedRoute';
 import { useState, useEffect, useCallback } from 'react';
 import { useSnackbar } from 'notistack';
 import { snackbar } from '@lib/snackbar';
